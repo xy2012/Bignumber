@@ -571,6 +571,7 @@ int main()
 			if (mystring[ii] == '\n')
 			{
 				cnt_n = cnt_n - 1;
+				mystring[ii]='\0';
 				break;
 			}
 		}
@@ -593,7 +594,7 @@ int main()
 					L2 = CreateListHead(L2, mystring, 0, 0);
 			}
 		}
-		mystring[0]='\0';
+//		mystring[0]='\0';
 	}
 
 
