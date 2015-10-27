@@ -76,6 +76,7 @@ Status InitList(LinkList *L)
 void printLink(LinkList L)
 {
 		Node *p;
+		int k;
 		p = L->next;
 		if (!p)
 			printf("0");
@@ -86,7 +87,16 @@ void printLink(LinkList L)
 		}
 		while (p)
 		{
-			printf("%4d", p->num);
+			/*	printf("%4d", p->num);
+			p = p->next;	*/
+			k = getdigit(p->num);
+			while (4 - k>0)
+			{
+				printf("0");
+				k = k + 1;
+			}
+			if (p->num)
+				printf("%d", p->num);
 			p = p->next;
 		}
 		printf("\n");
@@ -465,7 +475,7 @@ LinkList getL_temp(int k, int n, LinkList L1, LinkList L2, LinkList *L3)
 	InitList(&L_sub);
 	InitList(&L3_temp);
 	int i, nu, n_temp=0, l1, l2, l1_l3, l2_l3, l3;
-	int flags_err;
+//	int flags_err;
 	l3 = getdigit(k);
 	if (l3 != n)
 	{
@@ -491,10 +501,6 @@ LinkList getL_temp(int k, int n, LinkList L1, LinkList L2, LinkList *L3)
 	}
 	p = L;
 //	printf("%d\n",k);
-	if (k == 1919)
-	{
-		flags_err = 0;
-	}
 	while (k)
 	{
 		nu = k % 10000;
@@ -551,7 +557,7 @@ int main()
 	InitList(&L1);
 	InitList(&L2);
 	InitList(&L);
-	int flags = 1;
+	int flags = 1, flags_line = 0;
 	int nu1, nu2;
 	int ii = 0,cnt_n=2;
 
@@ -561,11 +567,22 @@ int main()
 		if (mystring[ii] == '\n')
 			break;
 	}
+	if (mystring[1] != '\n')
+	{
+		printf("op INput ERROR!\n");
+		return 0;
+	}
 	op = mystring[0];
+	if (op != '+' && op != '-' && op != '*' && op != '/')
+	{
+		printf("op INput ERROR!\n");
+		return 0;
+	}
 
+	flags_line = 1;
 	while (cnt_n)
 	{
-		for (ii = 0;ii < 4;ii++)
+		for (ii = 0; ii < 4; ii++)
 		{
 			mystring[ii] = getchar();
 			if (mystring[ii] == '\n')
@@ -574,11 +591,18 @@ int main()
 				mystring[ii] = '\0';
 				break;
 			}
+			else
+				if (mystring[ii]<48 || mystring[ii] >57)
+				{
+					printf("opNumber INput ERROR!\n");
+					return 0;
+				}
 		}
+
 		if (ii == 4)
 		{
 			digit[2 - cnt_n][0] = digit[2 - cnt_n][0] + 1;
-			if(cnt_n==2)
+			if (cnt_n == 2)
 				L1 = CreateListHead(L1, mystring, 0, 0);
 			else
 				L2 = CreateListHead(L2, mystring, 0, 0);
@@ -594,7 +618,8 @@ int main()
 					L2 = CreateListHead(L2, mystring, 0, 0);
 			}
 		}
-		
+		//		mystring[0]='\0';
+
 	}
 
 
@@ -682,27 +707,30 @@ int main()
 	
 	L1 = AlignList(L1, digit[0][1]);
 	L2 = AlignList(L2, digit[1][1]);
-	if (op == '/')
+
+	//	op = '*';
+	Node *p, *q, *r;
+	p = L1->next;
+	q = L2->next;
+	if (4 * digit[0][0] + digit[0][1] == 1)
 	{
-	//	InitList(&L1_temp);
-	//	InitList(&L2_temp);
-		Node *p, *q, *p0;
-		p = L1->next;
-		q = L2->next;
-		while (p->next)
+		if (p->num == 0)
 		{
-			nu1 = p->num;
-			p = p->next;
-		}
-		nu1 = 10000 * p->num + nu1;
-		while (q)
-		{
-			nu2 = q->num;
-			q = q->next;
+			printf("opNumber1 INput ERROR!\n");
+			return 0;
 		}
 	}
-//	op = '*';
-	Node *p,*r;
+	if (4 * digit[1][0] + digit[1][1] == 1)
+	{
+		if (q->num == 0)
+		{
+			printf("opNumber2 INput ERROR!\n");
+			return 0;
+		}
+	}
+
+
+
 	LinkList L_re;
 	InitList(&L_re);
 	switch (op)
@@ -729,17 +757,36 @@ int main()
 		   
 		}
 		printLink(L_re);
-		printf("%d s\n", (end - start) / CLOCKS_PER_SEC);
+	//	printf("%d s\n", (end - start) / CLOCKS_PER_SEC);
 		break;
 	case '/':
 	{
 		int n,cn_temp;
-		Node *p,*q;
 		LinkList p0,L_subrev,L1_temp1,L3,L3_temp;
 		InitList(&L_subrev);
 		InitList(&L3);
 		InitList(&L3_temp);
+
+
+		p = L1->next;
+		q = L2->next;
+		nu1 = p->num;
+		if (p->next)
+		{
+			while (p->next)
+			{
+				nu1 = p->num;
+				p = p->next;
+			}
+			nu1 = 10000 * p->num + nu1;
+		}
+		while (q)
+		{
+			nu2 = q->num;
+			q = q->next;
+		}
 		L1_temp1 = L1;
+
 	//	n = digit[0][0] * 4 + digit[0][1] - digit[1][0] * 4 - digit[1][1];
 	//	int record[n][2];
 		start = clock();
@@ -811,6 +858,7 @@ int main()
 		//	Destory(L_subrev);
 		}
 		end = clock();
+	//	Destory(L_re);
 		p = L3->next;
 		while (p)
 		{
@@ -832,7 +880,7 @@ int main()
 
 		}
 		printLink(L_re);
-		printf("%d s", (end - start) / CLOCKS_PER_SEC);
+	//	printf("%d s", (end - start) / CLOCKS_PER_SEC);
 	}
 	}
 	return 0;
