@@ -63,12 +63,12 @@ typedef struct Node *LinkList;
 //??????
 Status InitList(LinkList *L)
 {
-	*L = (LinkList)malloc(sizeof(Node)); /* ?????,??L?????? */
-	if (!(*L)) /* ?????? */
+	*L = (LinkList)malloc(sizeof(Node)); 
+	if (!(*L)) 
 	{
 		return ERROR;
 	}
-	(*L)->next = NULL; /* ????? */
+	(*L)->next = NULL; 
 	return OK;
 }
 
@@ -87,8 +87,6 @@ void printLink(LinkList L)
 		}
 		while (p)
 		{
-			/*	printf("%4d", p->num);
-			p = p->next;	*/
 			k = getdigit(p->num);
 			while (4 - k>0)
 			{
@@ -120,14 +118,15 @@ void Destory(LinkList L)
 //???????
 LinkList CreateListHead(LinkList L, char* string_temp, int n1, int n2)
 {
-	LinkList p;
-	p = (LinkList)malloc(sizeof(Node)); /*  ????? */
+	LinkList p1;
+	p1 = (LinkList)malloc(sizeof(Node)); /*  ????? */
 										//	p->data = string_temp;
-	p->next = L->next;
-	L->next = p;                      /*  ????? */
-	strcpy(p->data, string_temp);
-	p->num = n1;
-	p->en = n2;
+	p1->next =L->next;
+	                     /*  ????? */
+	strcpy(p1->data, string_temp);
+	p1->num = n1;
+	p1->en = n2;
+	L->next = p1;
 	return L;
 }
 
@@ -475,7 +474,7 @@ LinkList getL_temp(int k, int n, LinkList L1, LinkList L2, LinkList *L3)
 	InitList(&L_sub);
 	InitList(&L3_temp);
 	int i, nu, n_temp=0, l1, l2, l1_l3, l2_l3, l3;
-//	int flags_err;
+	int flags_err;
 	l3 = getdigit(k);
 	if (l3 != n)
 	{
@@ -501,6 +500,10 @@ LinkList getL_temp(int k, int n, LinkList L1, LinkList L2, LinkList *L3)
 	}
 	p = L;
 //	printf("%d\n",k);
+	if (k == 1919)
+	{
+		flags_err = 0;
+	}
 	while (k)
 	{
 		nu = k % 10000;
@@ -552,20 +555,19 @@ int main()
 	char top1, top2;
 	char mystring[5], mystring_temp[5];
 //	FILE *ft;
-	LinkList L1, L2, L, L_temp, L1_temp, L2_temp;
+	LinkList L1, L2, L, L_temp, L1_temp, L3_adj;
 
 	InitList(&L1);
 	InitList(&L2);
 	InitList(&L);
-	int flags = 1, flags_line = 0;
+	int flags = 1;
 	int nu1, nu2;
 	int ii = 0,cnt_n=2;
+	int flags_line = 1;
 
-	for (ii = 0;ii < 4;ii++)
+	for (ii = 0;ii < 2;ii++)
 	{
 		mystring[ii] = getchar();
-		if (mystring[ii] == '\n')
-			break;
 	}
 	if (mystring[1] != '\n')
 	{
@@ -579,16 +581,15 @@ int main()
 		return 0;
 	}
 
-	flags_line = 1;
 	while (cnt_n)
 	{
-		for (ii = 0; ii < 4; ii++)
+		for (ii = 0;ii < 4;ii++)
 		{
 			mystring[ii] = getchar();
 			if (mystring[ii] == '\n')
 			{
 				cnt_n = cnt_n - 1;
-				mystring[ii] = '\0';
+				mystring[ii]='\0';
 				break;
 			}
 			else
@@ -598,11 +599,11 @@ int main()
 					return 0;
 				}
 		}
-
+		mystring[ii] = '\0';
 		if (ii == 4)
 		{
 			digit[2 - cnt_n][0] = digit[2 - cnt_n][0] + 1;
-			if (cnt_n == 2)
+			if(cnt_n==2)
 				L1 = CreateListHead(L1, mystring, 0, 0);
 			else
 				L2 = CreateListHead(L2, mystring, 0, 0);
@@ -618,8 +619,7 @@ int main()
 					L2 = CreateListHead(L2, mystring, 0, 0);
 			}
 		}
-		//		mystring[0]='\0';
-
+//		mystring[0]='\0';
 	}
 
 
@@ -627,7 +627,7 @@ int main()
 
 	
 
-	/*
+	/*read from txt to test my input,so save it
 	ft = fopen("C:\\Users\\v-xiafe\\Desktop\\ASE\\project (1)\\ConsoleApplication3\\Release\\test.txt", "r");
 	if (ft == NULL)
 	{
@@ -708,7 +708,6 @@ int main()
 	L1 = AlignList(L1, digit[0][1]);
 	L2 = AlignList(L2, digit[1][1]);
 
-	//	op = '*';
 	Node *p, *q, *r;
 	p = L1->next;
 	q = L2->next;
@@ -731,43 +730,11 @@ int main()
 
 
 
-	LinkList L_re;
-	InitList(&L_re);
-	switch (op)
+	if (op == '/')
 	{
-	case '+':
-		L_temp = add(L1, L2, L);
-		printLink(L_temp);
-		break;
-	case '-':
-		L_temp = sub(L2, L1, L);
-		printLink(L_temp);
-		break;
-	case '*':
-		start = clock();
-		L_temp = mul(L1, L2, L);
-		end = clock();
-		p = L_temp->next;
-		while(p)
-		{
-			r = p;
-			L_re = CreateListHead(L_re, "00", p->num, 0);
-			p = p->next;
-			free(r);
-		   
-		}
-		printLink(L_re);
-	//	printf("%d s\n", (end - start) / CLOCKS_PER_SEC);
-		break;
-	case '/':
-	{
-		int n,cn_temp;
-		LinkList p0,L_subrev,L1_temp1,L3,L3_temp;
-		InitList(&L_subrev);
-		InitList(&L3);
-		InitList(&L3_temp);
-
-
+	//	InitList(&L1_temp);
+	//	InitList(&L2_temp);
+	//	Node *p, *q, *p0;
 		p = L1->next;
 		q = L2->next;
 		nu1 = p->num;
@@ -785,11 +752,50 @@ int main()
 			nu2 = q->num;
 			q = q->next;
 		}
+	}
+//	op = '*';
+//	Node *p,*r;
+	LinkList L_re;
+	InitList(&L_re);
+	switch (op)
+	{
+	case '+':
+		L_temp = add(L1, L2, L);
+		printLink(L_temp);
+		break;
+	case '-':
+		L_temp = sub(L2, L1, L);
+		printLink(L_temp);
+		break;
+	case '*':
+	//	start = clock();
+		L_temp = mul(L1, L2, L);
+	//	end = clock();
+		p = L_temp->next;
+		while(p)
+		{
+			r = p;
+			L_re = CreateListHead(L_re, "00", p->num, 0);
+			p = p->next;
+			free(r);
+		   
+		}
+		printLink(L_re);
+	//	printf("%d s\n", (end - start) / CLOCKS_PER_SEC);
+		break;
+	case '/':
+	{
+		int n,cn_temp;
+//		Node *p,*q;
+		LinkList p0,L_subrev,L1_temp1,L3,L3_temp,L_zc;
+		InitList(&L_subrev);
+		InitList(&L3);
+		InitList(&L3_temp);
+		InitList(&L_zc);
 		L1_temp1 = L1;
-
 	//	n = digit[0][0] * 4 + digit[0][1] - digit[1][0] * 4 - digit[1][1];
 	//	int record[n][2];
-		start = clock();
+	//	start = clock();
 		while (1)
 		{
 			n = digit[0][0] * 4 + digit[0][1] - digit[1][0] * 4 - digit[1][1];
@@ -857,30 +863,42 @@ int main()
 			}
 		//	Destory(L_subrev);
 		}
-		end = clock();
-	//	Destory(L_re);
-		p = L3->next;
-		while (p)
+//		end = clock();
+		L_zc = sub(L1_temp1,L2, L_zc);
+		p = L_zc->next;
+		if (p->num == 0 && p->next == NULL)
 		{
-			r = p;
-			L_re = CreateListHead(L_re, "00", p->num, 0);
-			p = p->next;
-			free(r);
-
+			p->num = 1;
+			InitList(&L3_adj);
+			L3_adj = add(L3, L_zc, L3_adj);
+			printLink(L3_adj);
+			printf("0\n");
 		}
-		printLink(L_re);
-		Destory(L_re);
-		p = L1_temp1->next;
-		while (p)
+		else
 		{
-			r = p;
-			L_re = CreateListHead(L_re, "00", p->num, 0);
-			p = p->next;
-			free(r);
+			p = L3->next;
+			while (p)
+			{
+				r = p;
+				L_re = CreateListHead(L_re, "00", p->num, 0);
+				p = p->next;
+				free(r);
 
+			}
+			printLink(L_re);
+			Destory(L_re);
+			p = L1_temp1->next;
+			while (p)
+			{
+				r = p;
+				L_re = CreateListHead(L_re, "00", p->num, 0);
+				p = p->next;
+				free(r);
+
+			}
+			printLink(L_re);
 		}
-		printLink(L_re);
-	//	printf("%d s", (end - start) / CLOCKS_PER_SEC);
+//		printf("%d s", (end - start) / CLOCKS_PER_SEC);
 	}
 	}
 	return 0;
