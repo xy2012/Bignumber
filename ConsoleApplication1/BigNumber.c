@@ -611,6 +611,11 @@ int main()
 		else
 		{
 			digit[2 - cnt_n - 1][1] = ii;
+			if(digit[2 - cnt_n - 1][1]+ digit[2 - cnt_n - 1][0]*4==0)
+			{
+				printf("opNumber INput ERROR!\n");
+				return 0;
+			}
 			if (ii)
 			{
 				if (cnt_n == 1)
